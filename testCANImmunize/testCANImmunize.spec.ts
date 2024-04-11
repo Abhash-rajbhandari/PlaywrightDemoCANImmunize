@@ -1,12 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from '../pageObjects/loginPage';
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
-  await page.getByLabel('Email address').click();
-  await page.getByLabel('Email address').fill('super@canimmunize.ca');
-  await page.getByLabel('Password').click();
-  await page.getByLabel('Password').fill('Console123!');
-  await page.getByRole('button', { name: 'Continue' }).click();
+  const loginPage = new LoginPage(page);
+  await loginPage.navigate();
+  await loginPage.login('super@canimmunize.ca', 'Console123!');
 });
 
 test('Should not enable Save button without filling required fields', async ({ page }) => {
@@ -68,6 +66,10 @@ test('Should enable Save button if all required fields are filled', async ({ pag
 
     await expect(page.locator('span').filter({ hasText: 'Save' }).last()).toBeEnabled();
       
+  });
+
+  test('Should be able to delete patient from patient info page', async ({ page }) => {
+
   });
 
 test('Should show warning for existing patient while adding patient with same Health Card', async ({ page }) => {
@@ -230,9 +232,7 @@ test('Should show warning for existing patient while adding patient with same He
     await page.goto('https://canimm-test.us.auth0.com/u/login?state=hKFo2SBfeE5pQXdIRlFXR0k5UG1JRUh0bE5TVzhBcDdwRlBXNqFur3VuaXZlcnNhbC1sb2dpbqN0aWTZIDlHaVZoVk1kTmI1NGNZLWpQU1NPWHFkNUVRNFI1Vmdvo2NpZNkgcmV0Tlk0cmtYV09LRmZqU2FWMVVyZnlySHptMUVQTDQ');
   });
 
-  test('Should be able to delete patient from patient info page', async ({ page }) => {
 
-  });
 
   async function deletePatientFromRepository(healthCardNumber, page) {
     await page.getByPlaceholder('Patient Search').click();
