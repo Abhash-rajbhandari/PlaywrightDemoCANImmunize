@@ -32,6 +32,7 @@ export class RepositoryPage{
 
 
     constructor (page: Page){
+        this.page = page;
         this.repositoryLink = page.getByRole('link', { name: 'Repository' });        
         this.addNewPatientButton = page.getByRole('button', { name: 'plus New Patient' });
         this.firstNameTextBox = page.getByLabel('First Name *');
@@ -47,7 +48,7 @@ export class RepositoryPage{
         this.healthCardTypeDropDownMenu = page.getByLabel('Health Card Type*');
         this.healthCardTypeManitobaItem = page.getByText('Manitoba');
         this.managingOrganizationDropDown = page.getByLabel('Managing Organization*');
-        this.walmartPharmaAsManagingOrganizationDropDownItem = page.getByText('Walmart_Pharmacy - Walmart');
+        this.walmartPharmaAsManagingOrganizationDropDownItem = page.getByText('Walmart_Pharmacy - Walmart Pharmacy');
         this.overrideButton = page.getByRole('button', { name: 'Override' });
         this.cancelButton = page.getByRole('button', { name: 'Cancel' });
         this.saveButton = page.getByRole('button', {name: 'Save'});
@@ -63,7 +64,7 @@ export class RepositoryPage{
     }
 
     async navigateRepositoryPage(){
-        await this.repositoryLink.click();
+        await this.repositoryLink.click();        
     }
 
     async searchPatient(userTestData){
@@ -76,8 +77,31 @@ export class RepositoryPage{
         await this.searchResultFirstItem.click();
     }
 
+    async getPatientPresentInSearchResult(userTestData){
+        return(await this.searchResultColumns.filter({hasText: userTestData.HealthCardNumber}));
+    }
+
+    async openPatientDetailsByHealthCardNumber(healthCardNumber){
+        await this.searchResultColumns.filter({hasText: healthCardNumber}).click();
+    }
+
+    async getNameOfPatientInSearchResult(healthCardNumber){
+        return (await this.searchResultColumns.filter({hasText: healthCardNumber}).getByRole('cell').nth(0).textContent());
+    }
+
+    async getEmailOfPatientInSearchResult(healthCardNumber){
+        return (await this.searchResultColumns.filter({hasText: healthCardNumber}).getByRole('cell').nth(1).textContent());
+    }
+
+    async getDOBOfPatientInSearchResult(healthCardNumber){
+        return (await this.searchResultColumns.filter({hasText: healthCardNumber}).getByRole('cell').nth(2).textContent());
+    }
+
+    async getGenderOfPatientInSearchResult(healthCardNumber){
+        return (await this.searchResultColumns.filter({hasText: healthCardNumber}).getByRole('cell').nth(3).textContent());
+    }
+
     async isAnyPatientsAvailable(){
-        let numberOfColumnsAvailable = await this.searchResultColumns.count();
         if(await this.searchResultColumns.count()>2)
             return true;
         else
@@ -89,6 +113,7 @@ export class RepositoryPage{
         await expect(this.addNewPatientButton).toBeEnabled();
 
         await this.addNewPatientButton.click();
+        await expect(this.firstNameTextBox).toBeEditable();
         await this.firstNameTextBox.click();
         await this.firstNameTextBox.fill(userTestData.FirstName);        
         await this.lastNameTextBox.fill(userTestData.LastName);
@@ -111,7 +136,7 @@ export class RepositoryPage{
             await this.healthCardTypeManitobaItem.click();
         } 
         await this.healthCardNumber.click();
-        await this.healthCardNumber.fill('564265193');
+        await this.healthCardNumber.fill(userTestData.HealthCardNumber);
         
         await this.managingOrganizationDropDown.click();
         await this.walmartPharmaAsManagingOrganizationDropDownItem.click();
@@ -119,6 +144,7 @@ export class RepositoryPage{
 
     async clickSaveButton(){
         await this.saveButton.click();
+        await expect(this.addNewPatientButton).toBeHidden();
     }
 
     async clickCancelButton(){
