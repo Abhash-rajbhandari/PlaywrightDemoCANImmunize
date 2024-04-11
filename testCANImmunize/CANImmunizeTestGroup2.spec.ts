@@ -3,6 +3,9 @@ import { LoginPage } from '../pageObjects/loginPage';
 import { RepositoryPage } from '../pageObjects/repositoryPage';
 import { PatientsDetailsPage } from '../pageObjects/patientsDetailsPage';
 import { Helper } from '../helpers/helperMethods';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 //Change this health card number back 
 var userTestData1 = {
@@ -50,7 +53,7 @@ var userTestData3 = {
 test.beforeEach(async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.navigate();
-    await loginPage.login('super@canimmunize.ca', 'Console123!');
+    await loginPage.login(process.env.UserId, process.env.Password);
   });
 
   async function createNewPatient(repositoryPage, testData){

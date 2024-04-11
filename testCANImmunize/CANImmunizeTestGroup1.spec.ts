@@ -1,12 +1,14 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pageObjects/loginPage';
 import { RepositoryPage } from '../pageObjects/repositoryPage';
+import dotenv from 'dotenv';
 
+dotenv.config();
 
 test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.navigate();
-  await loginPage.login('super@canimmunize.ca', 'Console123!');
+  await loginPage.login(process.env.UserId, process.env.Password);
 });
 
 var userTestData = {
@@ -47,19 +49,19 @@ var userTestData = {
       //Verify FirstName Field is required
       await repositoryPage.fillAllPatientRecords(userTestData);    
       await repositoryPage.clearMandatoryFieldFirstName();
-      await expect(await repositoryPage.isSaveButtonEnabled()).toBeFalsy();
+      await expect(await repositoryPage.getSaveButton()).toBeDisabled();
       await repositoryPage.clickCancelButton();
 
       // Verify LastName Field is required
       await repositoryPage.fillAllPatientRecords(userTestData);
       await repositoryPage.clearMandatoryFieldLastName();
-      await expect(await repositoryPage.isSaveButtonEnabled()).toBeFalsy();
+      await expect(await repositoryPage.getSaveButton()).toBeDisabled();
       await repositoryPage.clickCancelButton();
 
       //Verify Birthdate Field is required
       await repositoryPage.fillAllPatientRecords(userTestData);
       await repositoryPage.clearMandatoryFieldBirthDate();
-      await expect(await repositoryPage.isSaveButtonEnabled()).toBeFalsy();
+      await expect(await repositoryPage.getSaveButton()).toBeDisabled();
       await repositoryPage.clickCancelButton();
 
       //Verify Gender Field is required
@@ -69,13 +71,13 @@ var userTestData = {
       //Verify Health Card Type Field is required
       await repositoryPage.fillAllPatientRecords(userTestData);
       await repositoryPage.clearMandatoryFieldHealthCardType();
-      await expect(await repositoryPage.isSaveButtonEnabled()).toBeFalsy();
+      await expect(await repositoryPage.getSaveButton()).toBeDisabled();
       await repositoryPage.clickCancelButton();
 
       //Verify Health Card Number Field is required
       await repositoryPage.fillAllPatientRecords(userTestData);
       await repositoryPage.clearMandatoryFieldHealthCardNumber();
-      await expect(await repositoryPage.isSaveButtonEnabled()).toBeFalsy();
+      await expect(await repositoryPage.getSaveButton()).toBeDisabled();
       await repositoryPage.clickCancelButton();
 
       //Verify Managing Organization Field is required
@@ -88,6 +90,6 @@ var userTestData = {
     const repositoryPage = new RepositoryPage(page);
     await repositoryPage.navigateRepositoryPage();
     await repositoryPage.fillAllPatientRecords(userTestData);    
-    await expect(await repositoryPage.isSaveButtonEnabled()).toBeTruthy();          
+    await expect(await repositoryPage.getSaveButton()).toBeEnabled();          
   });
     

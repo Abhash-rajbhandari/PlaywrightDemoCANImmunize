@@ -159,8 +159,8 @@ export class RepositoryPage{
         await this.overrideButton.click();
     }
 
-    async isSaveButtonEnabled(){
-        return await this.saveButton.isEnabled();
+    async getSaveButton(){
+        return await this.saveButton;
     }
 
     async clearMandatoryFieldFirstName(){
