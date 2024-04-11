@@ -9,50 +9,6 @@ test.beforeEach(async ({ page }) => {
   await page.getByRole('button', { name: 'Continue' }).click();
 });
 
-test('Should delete Patient record by Health card number', async ({ page }) => {
-  await page.getByRole('link', { name: 'Appointments' }).click();
-  await page.getByRole('cell', { name: 'Rajbhandari, Abhash' }).click();
-  await page.getByRole('button', { name: 'delete Delete' }).click();
-  await page.getByRole('button', { name: 'Yes' }).click();
-  await page.locator('#deleteReason').click();
-  await page.locator('#deleteReason').fill('Testing purpose');
-  await page.getByRole('button', { name: 'OK' }).click();
-  await page.getByRole('button', { name: 'plus New Patient' }).click();
-  await page.getByLabel('First Name *').click();
-  await page.getByLabel('First Name *').fill('test');
-  await page.getByLabel('First Name *').press('Tab');
-  await page.getByLabel('Last Name *').fill('test Abhash');
-  await page.getByLabel('Last Name *').press('Tab');
-  await page.getByLabel('Preferred Name').press('Tab');
-  await page.locator('.ant-picker').click();
-  await page.getByPlaceholder('YYYY-MM-DD').fill('1994-01-05');
-  await page.getByPlaceholder('YYYY-MM-DD').press('Enter');
-  await page.getByLabel('Gender *').click();
-  await page.getByText('Male', { exact: true }).click();
-  await page.getByLabel('Health Card Type*').click();
-  await page.getByLabel('Health Card Type*').fill('nova');
-  await page.getByText('Nova Scotia').click();
-  await page.getByLabel('Gender *').press('Escape');
-  await page.getByLabel('Health Card Number *').click();
-  await page.getByLabel('Health Card Number *').fill('564265193');
-  await page.getByLabel('Managing Organization*').click();
-  await page.getByText('Walmart_Pharmacy - Walmart').click();
-  await page.getByRole('button', { name: 'Save' }).click();
-  await page.getByRole('button', { name: 'Override' }).click();
-  await page.getByLabel('Override Reason').click();
-  await page.getByLabel('Override Reason').fill('testing');
-  await page.getByRole('button', { name: 'OK' }).click();
-  await page.getByRole('button', { name: 'Continue' }).click();
-  await page.getByRole('cell', { name: '(NS)' }).click();
-  await page.getByRole('cell', { name: 'test', exact: true }).click();
-  await page.getByRole('cell', { name: 'test Abhash' }).click();
-  await page.getByText('test Abhash, test Edit DeleteCopy ID').click();
-  await page.getByRole('button', { name: 'Proof of Vaccination' }).click();
-  await page.getByRole('button', { name: 'Add Vaccination' }).click();
-  
-});
-
-
 test('Should not enable Save button without filling required fields', async ({ page }) => {
 
 //Create a parameter that can pass required fields value so that it could check in loop
@@ -82,6 +38,7 @@ test('Should not enable Save button without filling required fields', async ({ p
  
 
   // await page.locator('span').filter({ hasText: 'Save' }).first().click();
+
 });
 
 
@@ -114,9 +71,10 @@ test('Should enable Save button if all required fields are filled', async ({ pag
       
   });
 
-test('Should show warning for existing patient while adding', async ({ page }) => {
+test('Should show warning for existing patient while adding patient with same Health Card', async ({ page }) => {
 
   //Should be checking for duplicate health card number exists. If doesn't exists then create one.
+
   //Parameterize expected message if duplicate.
 
   //Create a parameter that can pass required fields value so that it could check in loop
@@ -166,15 +124,116 @@ test('Should show warning for existing patient while adding', async ({ page }) =
     
     //Verify Name, Email, DOB, Gender information is displayed correctly
     
-    await expect(page.locator('tbody')).toContainText('test test, testing');
+    let resultcolumns = await page.getByRole('table').locator('tr');
+    //.filter({has: page.getByRole('table', {includeHidden: false})});
+
+    //Skipping the first row as it is doesn't hold any values.
+    await expect(resultcolumns.nth(2)).toContainText('test test, testing');
     
-    await expect(page.locator('tbody')).toContainText('1994-01-09');
-    await expect(page.locator('tbody')).toContainText('Male');
-    await expect(page.locator('tbody')).toContainText('564265193');
+    //add Email value too here.
+
+    await expect(resultcolumns.nth(2)).toContainText('1994-01-09');
+    await expect(resultcolumns.nth(2)).toContainText('Male');
+    await expect(resultcolumns.nth(2)).toContainText('564265193');
+    
+
+
+  });
+
+  test('Should match all information of patient after creating and searching a new patient', async({page})=>{
+
+    await page.getByRole('link', { name: 'Repository' }).click();
+
+    await page.getByPlaceholder('Patient Search').click();
+    await page.getByPlaceholder('Patient Search').fill('564265193');
+
+    let resultcolumns = await page.getByRole('table').locator('tr');
+    //.filter({has: page.getByRole('table', {includeHidden: false})});
+
+    //Skipping the first row as it is doesn't hold any values.
+    await resultcolumns.nth(2).click();
+
+    await expect(
+      page.getByRole('row').filter({has: page.locator('th').getByText('First Name', {exact: true})}).locator('td').nth(0).textContent()
+    ).toEqual('');
+    
+    await expect(
+      page.getByRole('row').filter({has: page.locator('th').getByText('Last Name', {exact: true})}).locator('td').nth(1).textContent()
+    ).toEqual('');
+
+    await expect(
+      page.getByRole('row').filter({has: page.locator('th').getByText('Preferred Name', {exact: true})}).locator('td').nth(2).textContent()
+    ).toEqual('');
+
+    await expect(
+      page.getByRole('row').filter({has: page.locator('th').getByText('Date of Birth', {exact: true})}).locator('td').nth(0).textContent()
+    ).toEqual('');
+
+    await expect(
+      page.getByRole('row').filter({has: page.locator('th').getByText('Gender', {exact: true})}).locator('td').nth(1).textContent()
+    ).toEqual('');
+
+    await expect(
+      page.getByRole('row').filter({has: page.locator('th').getByText('Pronoun', {exact: true})}).locator('td').nth(2).textContent()
+    ).toEqual('');
+
+    await expect(
+      page.getByRole('row').filter({has: page.locator('th').getByText('Health Card Number', {exact: true})}).locator('td').nth(0).textContent()
+    ).toEqual('');
+
+    await expect(
+      page.getByRole('row').filter({has: page.locator('th').getByText('Email', {exact: true})}).locator('td').nth(1).textContent()
+    ).toEqual('');
+
+    await expect(
+      page.getByRole('row').filter({has: page.locator('th').getByText('Phone', {exact: true})}).locator('td').nth(2).textContent()
+    ).toEqual('');
+
+    await expect(
+      page.getByRole('row').filter({has: page.locator('th').getByText('Address', {exact: true})}).locator('td').nth(0).textContent()
+    ).toEqual('');
+
+    await expect(
+      page.getByRole('row').filter({has: page.locator('th').getByText('Managing Organization', {exact: true})}).locator('td').nth(1).textContent()
+    ).toEqual('');
+
+
+    let managingOrganization = await page.getByRole('row').filter({has: page.locator('th').getByText('Managing Organization', {exact: true})}).locator('td').nth(1).textContent()
+   
+
+    //By using Class Name
+    // let fromClasName = await page.locator(`//*[@class='ant-descriptions-item-content cy-patientManagingOrg']`).textContent();
+
+    //Merging ClassName with Row number
+    //let FirstnameByMerging = await page.getByRole('row').filter({has: page.locator('th').getByText('First Name', {exact: true})}).locator(`//*[@class='ant-descriptions-item-content cy-patientManagingOrg']`).textContent();
+
+    //Grabbing the entire row and then asserting
+    // let entireRow = await page.getByRole('row').filter({has: page.locator('th').getByText('First Name', {exact: true})}).textContent();
     
   });
 
+  test('Should match all information of patient after creating a new patient', async({page})=>{
 
+    //Create a new patient 
+
+    //After creating verify patient info is openned.
+    //To verify, check edit and delete button, check for header to have LastName, FirstName.
+    
+    await expect(page.locator('h2')).toContainText('test test, testing');
+    await expect(page.getByRole('button', { name: 'edit Edit' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'delete Delete' })).toBeVisible();
+
+
+    //After openning verify all the information is correct
+
+    await page.goto('https://novascotia.flow.qa.canimmunize.dev/');
+    await page.goto('https://novascotia.flow.qa.canimmunize.dev/home');
+    await page.goto('https://canimm-test.us.auth0.com/u/login?state=hKFo2SBfeE5pQXdIRlFXR0k5UG1JRUh0bE5TVzhBcDdwRlBXNqFur3VuaXZlcnNhbC1sb2dpbqN0aWTZIDlHaVZoVk1kTmI1NGNZLWpQU1NPWHFkNUVRNFI1Vmdvo2NpZNkgcmV0Tlk0cmtYV09LRmZqU2FWMVVyZnlySHptMUVQTDQ');
+  });
+
+  test('Should be able to delete patient from patient info page', async ({ page }) => {
+
+  });
 
   async function deletePatientFromRepository(healthCardNumber, page) {
     await page.getByPlaceholder('Patient Search').click();
