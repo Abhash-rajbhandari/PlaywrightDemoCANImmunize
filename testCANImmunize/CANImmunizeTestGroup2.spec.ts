@@ -106,7 +106,7 @@ test.beforeEach(async ({ page }) => {
   });
 
 
-   test('Should display added patient in search result', async({page})=>{
+   test('Should display added patient in repository search result', async({page})=>{
     
     const repositoryPage = new RepositoryPage(page);
     const patientsDetailsPage = new PatientsDetailsPage(page);
@@ -129,7 +129,7 @@ test.beforeEach(async ({ page }) => {
    });
 
   test('Should match all information of patient after creating and searching a new patient', async({ page })=>{
-    
+
     const repositoryPage = new RepositoryPage(page);
     const patientsDetailsPage = new PatientsDetailsPage(page);
     //Delete patient information if already present

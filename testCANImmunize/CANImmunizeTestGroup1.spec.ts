@@ -25,7 +25,7 @@ var userTestData = {
   PhoneNumber: "7807180054",
 }
 
-  test('Cancel button should not save patient information.', async ({ page }) => {
+  test('Should not save patient information if cancel button is clicked', async ({ page }) => {
     const repositoryPage = new RepositoryPage(page);
     await repositoryPage.navigateRepositoryPage();
     //over riding health card number to make it different while searching
