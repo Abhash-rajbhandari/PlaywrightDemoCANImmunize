@@ -41,7 +41,6 @@ test('Should not enable Save button without filling required fields', async ({ p
 
 });
 
-
 test('Should enable Save button if all required fields are filled', async ({ page }) => {
 
   //Create a parameter that can pass required fields value so that it could check in loop
