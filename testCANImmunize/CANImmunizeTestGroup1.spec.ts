@@ -1,8 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pageObjects/loginPage';
-import { RepositoryPage } from '../pageObjects/RepositoryPage';
+import { RepositoryPage } from '../pageObjects/repositoryPage';
 
-test.describe('Repository Page', () => {
 
 test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
@@ -88,6 +87,6 @@ var userTestData = {
     await expect(await repositoryPage.isSaveButtonEnabled()).toBeTruthy();          
   });
     
-    test('Should be able to delete patient from patient info page', async ({ page }) => {
-      
-    });
+  test('Should be able to delete patient from patient info page', async ({ page }) => {
+    
+  });

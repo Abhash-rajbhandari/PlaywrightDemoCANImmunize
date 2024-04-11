@@ -49,6 +49,7 @@ test('Should show warning for existing patient while adding patient with same He
 
   });
 
+  //3
   test('Should display added patient in search result', async ({ page }) => {
     //delete all the patients with health card number 564265193
 
@@ -78,6 +79,7 @@ test('Should show warning for existing patient while adding patient with same He
 
   });
 
+  //2
   test('Should match all information of patient after creating and searching a new patient', async({page})=>{
 
     await page.getByRole('link', { name: 'Repository' }).click();
@@ -150,6 +152,7 @@ test('Should show warning for existing patient while adding patient with same He
     
   });
 
+  //1
   test('Should match all information of patient after creating a new patient', async({page})=>{
 
     //Create a new patient 

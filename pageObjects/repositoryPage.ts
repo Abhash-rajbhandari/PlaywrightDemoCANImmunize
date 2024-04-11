@@ -28,6 +28,7 @@ export class RepositoryPage{
     readonly patientSearchTextBox: Locator;
     readonly patientSearchButton: Locator;
     readonly searchResultColumns: Locator;
+    readonly searchResultFirstItem: Locator;
 
 
     constructor (page: Page){
@@ -58,6 +59,7 @@ export class RepositoryPage{
         this.patientSearchTextBox = page.getByPlaceholder('Patient Search');
         this.patientSearchButton = page.getByRole('button', { name: 'search' });
         this.searchResultColumns = page.getByRole('row');
+        this.searchResultFirstItem = page.getByRole('table').locator('tr').nth(2);
     }
 
     async navigateRepositoryPage(){
@@ -68,6 +70,10 @@ export class RepositoryPage{
         await this.patientSearchTextBox.click()
         await this.patientSearchTextBox.fill(userTestData.HealthCardNumber);
         await this.patientSearchButton.click();
+    }
+
+    async openFirstSearchResultPatient(){
+        await this.searchResultFirstItem.click();
     }
 
     async isAnyPatientsAvailable(){
