@@ -29,6 +29,7 @@ export class RepositoryPage{
     readonly patientSearchButton: Locator;
     readonly searchResultColumns: Locator;
     readonly searchResultFirstItem: Locator;
+    readonly noResultTextMessage: Locator;
 
 
     constructor (page: Page){
@@ -61,6 +62,7 @@ export class RepositoryPage{
         this.patientSearchButton = page.getByRole('button', { name: 'search' });
         this.searchResultColumns = page.getByRole('row');
         this.searchResultFirstItem = page.getByRole('table').locator('tr').nth(2);
+        this.noResultTextMessage = page.getByText('No data');
     }
 
     async navigateRepositoryPage(){
@@ -101,11 +103,12 @@ export class RepositoryPage{
         return (await this.searchResultColumns.filter({hasText: healthCardNumber}).getByRole('cell').nth(3).textContent());
     }
 
-    async isAnyPatientsAvailable(){
-        if(await this.searchResultColumns.count()>2)
-            return true;
-        else
-            return false;
+    async isNoDataTextBoxVisible(){
+        return (await this.noResultTextMessage.isVisible());
+    }
+
+    async waitForResultToShow(){
+        await await expect(this.addNewPatientButton).toBeEnabled();
     }
 
     async fillAllPatientRecords(userTestData){

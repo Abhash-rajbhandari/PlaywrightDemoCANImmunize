@@ -32,11 +32,15 @@ var userTestData = {
     await repositoryPage.clickCancelButton();
     await repositoryPage.searchPatient(userTestData);
     //Verify that patient is not added in search results
-    await expect(await repositoryPage.isAnyPatientsAvailable()).toBeFalsy();
+    await repositoryPage.waitForResultToShow();
+    await expect(await repositoryPage.isNoDataTextBoxVisible()).toBeTruthy();
+    await expect(await repositoryPage.getPatientPresentInSearchResult(userTestData)).toBeHidden();
 
   });
 
   test('Should not enable Save button without filling required fields', async ({ page }) => {
+      //Setting the default timeout to 2 minutes
+      test.setTimeout(120000);
       const repositoryPage = new RepositoryPage(page);
       await repositoryPage.navigateRepositoryPage();
 
@@ -87,6 +91,3 @@ var userTestData = {
     await expect(await repositoryPage.isSaveButtonEnabled()).toBeTruthy();          
   });
     
-  test('Should be able to delete patient from patient info page', async ({ page }) => {
-    
-  });

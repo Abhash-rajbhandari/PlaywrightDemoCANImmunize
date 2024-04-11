@@ -59,10 +59,25 @@ test.beforeEach(async ({ page }) => {
     await repositoryPage.clickSaveButton();
   }
 
+  async function deletePatient(repositoryPage, patientsDetailsPage, testData){
+    await repositoryPage.navigateRepositoryPage();
+    await repositoryPage.searchPatient(testData);``
+    await repositoryPage.waitForResultToShow();
+    if(!(await repositoryPage.isNoDataTextBoxVisible())){
+      //Delete testData
+      await expect(await repositoryPage.getPatientPresentInSearchResult(testData)).toBeVisible();
+      await repositoryPage.openPatientDetailsByHealthCardNumber(testData.HealthCardNumber);
+      await patientsDetailsPage.deletePatient();
+    }  
+  }
+
   test('Should match all information of patient after creating a new patient', async({page})=>{
 
     const repositoryPage = new RepositoryPage(page);
     const patientsDetailsPage = new PatientsDetailsPage(page);
+
+    //Delete patient information if already present
+    await deletePatient(repositoryPage, patientsDetailsPage, userTestData3);
 
     await createNewPatient(repositoryPage, userTestData3);
 
@@ -91,6 +106,9 @@ test.beforeEach(async ({ page }) => {
    test('Should display added patient in search result', async({page})=>{
     
     const repositoryPage = new RepositoryPage(page);
+    const patientsDetailsPage = new PatientsDetailsPage(page);
+    //Delete patient information if already present
+    await deletePatient(repositoryPage, patientsDetailsPage, userTestData1);
 
     await createNewPatient(repositoryPage, userTestData1);
 
@@ -111,6 +129,8 @@ test.beforeEach(async ({ page }) => {
     
     const repositoryPage = new RepositoryPage(page);
     const patientsDetailsPage = new PatientsDetailsPage(page);
+    //Delete patient information if already present
+    await deletePatient(repositoryPage, patientsDetailsPage, userTestData2);
 
     await createNewPatient(repositoryPage, userTestData2);
 
